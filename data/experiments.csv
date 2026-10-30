@@ -1,0 +1,9 @@
+timestamp,scenario,link_status,sent,received,packet_loss_pct,recovery_seconds,notes
+2026-10-21 23:13:08,Automated ping test,Reachable,4,4,0.0,0.0,"Target IP: 127.0.0.1; test time: 2026-10-21T23:13:08+05:30. Test executed from the host computer, not directly inside Packet Tracer."
+2026-10-25 14:51:43,Automated ping test,Unreachable,4,0,100.0,60.0,"Target IP: 192.168.20.1; packet loss: 100.0%; test time: 2026-10-25T14:51:43+05:30; Test executed from the host computer, not directly inside Packet Tracer."
+2026-10-25 15:12:49,OSPF Failover - Router2 to Router3 link down,Reachable via alternate route,4,4,0.0,0.0,"Router2-Router3 link was disconnected. PC0 pinged PC3 successfully: 4 sent, 4 received, 0% loss."
+2026-10-25 15:16:54,Normal operation,All links up,4,4,0.0,0.0,PCO ping to 192.168.20.10; route via 10.0.2.1
+2026-10-28 14:50:28,R2-R3 link failure,R2-R3 down,4,4,0.0,0.0,PCO ping to 192.168.20.10; route via 10.0.2.1
+2026-10-28 16:23:56,R2-R3 link failure,R2-R3 down,4,4,0.0,0.0,PCO ping to 192.168.20.10; route via 10.0.2.1
+2026-10-28 16:24:19,R2-R3 link failure,R2-R3 down,2,2,0.0,0.0,PCO ping to 192.168.20.10; route via 10.0.2.1
+2026-10-28 16:36:57,Normal operation,All links up,4,4,0.0,0.0,PCO ping to 192.168.20.10; route via 10.0.2.1

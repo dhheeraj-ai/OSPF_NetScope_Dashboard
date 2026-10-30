@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OSPF Failover | Network Analytics</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div class="shell">
+
+    <aside class="sidebar">
+      <div class="brand-mark">N</div>
+
+      <div class="brand-name">
+        NetScope
+        <span>OSPF ANALYTICS</span>
+      </div>
+
+      <nav>
+        <a class="active" href="#overview">▦ &nbsp; Overview</a>
+        <a href="#live-network">⌘ &nbsp; Live Network</a>
+        <a href="#experiments">◷ &nbsp; Experiments</a>
+        <a href="#record">＋ &nbsp; Record a test</a>
+      </nav>
+
+      <div class="side-note">
+        <div class="live-dot"></div>
+        <strong>NetScope Dashboard</strong>
+        <p>Live topology data is retrieved from Cisco Packet Tracer. Experiment results are stored locally.</p>
+      </div>
+
+      <div class="side-footer">COMPUTER NETWORKS PROJECT</div>
+    </aside>
+
+    <main class="main">
+
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">NETWORK INTELLIGENCE / OSPF</div>
+          <h1>Failover Performance</h1>
+          <p class="subtitle">Redundant enterprise network · live topology and experiment analytics</p>
+        </div>
+
+        <div class="status-pill">
+          <span></span>
+          Local app running
+        </div>
+      </header>
+
+      <!-- Experiment Dashboard Notice -->
+      <section class="notice">
+        <b>OSPF Experiment Dashboard</b>
+        <span>
+          View your Packet Tracer topology and record measured ping,
+          packet-loss and failover-recovery results.
+        </span>
+      </section>
+
+      <!-- Experiment Metrics -->
+      <section id="overview" class="metric-grid">
+
+        <article class="metric-card">
+          <div class="metric-label">Tests recorded</div>
+          <div id="metric-tests" class="metric-value">—</div>
+          <div class="metric-foot">Saved experiment records</div>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-label">Latest packet loss</div>
+          <div id="metric-loss" class="metric-value">—</div>
+          <div class="metric-foot">Calculated from sent/received</div>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-label">Latest packets received</div>
+          <div id="metric-received" class="metric-value">—</div>
+          <div class="metric-foot">Of packets sent in latest test</div>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-label">Latest recovery time</div>
+          <div id="metric-recovery" class="metric-value">—</div>
+          <div class="metric-foot">Measured recovery in seconds</div>
+        </article>
+
+      </section>
+
+      <!-- LIVE PACKET TRACER NETWORK -->
+      <section id="live-network" class="panel network-panel">
+
+        <div class="panel-heading">
+          <div>
+            <h2>Live Packet Tracer Network</h2>
+            <p>Devices, connections and interface status from your topology</p>
+          </div>
+
+          <button type="button" id="refresh-network">
+            ↻ Refresh network
+          </button>
+        </div>
+
+        <div class="network-status-row">
+          <span id="network-status-dot" class="network-status-dot"></span>
+          <span id="network-status-text">Connecting to Packet Tracer…</span>
+          <span id="network-updated"></span>
+        </div>
+
+        <!-- Live Network Metrics -->
+        <div class="network-metrics">
+
+          <article class="network-metric">
+            <span>Total devices</span>
+            <strong id="network-device-count">—</strong>
+          </article>
+
+          <article class="network-metric">
+            <span>Connections</span>
+            <strong id="network-link-count">—</strong>
+          </article>
+
+          <article class="network-metric">
+            <span>Interfaces up</span>
+            <strong id="network-interfaces-up">—</strong>
+          </article>
+
+          <article class="network-metric">
+            <span>Interfaces down</span>
+            <strong id="network-interfaces-down">—</strong>
+          </article>
+
+        </div>
+
+        <!-- Devices and Connections -->
+        <div class="network-columns">
+
+          <div>
+            <h3>Network Devices</h3>
+
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Device</th>
+                    <th>Model</th>
+                    <th>Type</th>
+                    <th>Interfaces Up</th>
+                  </tr>
+                </thead>
+
+                <tbody id="network-devices-body">
+                  <tr>
+                    <td colspan="4">Waiting for network data…</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <h3>Network Connections</h3>
+
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Source</th>
+                    <th>Destination</th>
+                    <th>Link Type</th>
+                  </tr>
+                </thead>
+
+                <tbody id="network-links-body">
+                  <tr>
+                    <td colspan="3">Waiting for connection data…</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Router Interface Status -->
+        <div class="network-interface-section">
+          <h3>Router Interface Status</h3>
+
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Router</th>
+                  <th>Interface</th>
+                  <th>Port Status</th>
+                  <th>Protocol Status</th>
+                  <th>Connected</th>
+                </tr>
+              </thead>
+
+              <tbody id="network-interfaces-body">
+                <tr>
+                  <td colspan="5">Waiting for interface data…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="network-error" role="status"></div>
+
+        <div class="network-footnote">
+          Interface status comes from Packet Tracer. An interface being up
+          does not necessarily mean its OSPF adjacency is established.
+        </div>
+
+      </section>
+
+      <!-- Charts -->
+      <section class="charts-grid">
+
+        <article class="panel chart-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>Packet loss by experiment</h2>
+              <p>Lower is better · measured percentage</p>
+            </div>
+            <span class="chart-icon">↗</span>
+          </div>
+
+          <div class="chart-wrap">
+            <canvas id="lossChart"></canvas>
+          </div>
+        </article>
+
+        <article class="panel chart-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>Recovery time</h2>
+              <p>Seconds recorded per experiment</p>
+            </div>
+            <span class="chart-icon">◷</span>
+          </div>
+
+          <div class="chart-wrap">
+            <canvas id="recoveryChart"></canvas>
+          </div>
+        </article>
+
+      </section>
+
+      <!-- Record Experiment -->
+      <section id="record" class="panel form-panel">
+
+        <div class="panel-heading">
+          <div>
+            <h2>Record an experiment</h2>
+            <p>Enter results measured during your Packet Tracer test</p>
+          </div>
+
+          <span class="tag">MANUAL ENTRY</span>
+        </div>
+
+        <form id="experiment-form">
+
+          <label>
+            Scenario
+            <select name="scenario" required>
+              <option>Normal operation</option>
+              <option>R2-R3 link failure</option>
+              <option>Link restored</option>
+              <option>Other link failure</option>
+            </select>
+          </label>
+
+          <label>
+            Link status
+            <select name="link_status" required>
+              <option>All links up</option>
+              <option>R2-R3 down</option>
+              <option>Restored</option>
+              <option>Other link down</option>
+            </select>
+          </label>
+
+          <label>
+            Packets sent
+            <input
+              type="number"
+              name="sent"
+              min="1"
+              max="100000"
+              value="4"
+              required
+            >
+          </label>
+
+          <label>
+            Packets received
+            <input
+              type="number"
+              name="received"
+              min="0"
+              max="100000"
+              value="4"
+              required
+            >
+          </label>
+
+          <label>
+            Recovery time (seconds)
+            <input
+              type="number"
+              name="recovery_seconds"
+              min="0"
+              step="0.1"
+              value="0"
+            >
+          </label>
+
+          <label class="wide">
+            Notes
+            <input
+              type="text"
+              name="notes"
+              maxlength="300"
+              placeholder="e.g. PC0 ping to 192.168.20.10; route via 10.0.2.1"
+            >
+          </label>
+
+          <div class="form-bottom">
+            <span>Packet loss is calculated automatically.</span>
+            <button type="submit">Save experiment&nbsp; →</button>
+          </div>
+
+        </form>
+
+        <div id="form-message" role="status"></div>
+      </section>
+
+      <!-- Experiment History -->
+      <section id="experiments" class="panel table-panel">
+
+        <div class="panel-heading">
+          <div>
+            <h2>Experiment history</h2>
+            <p>Stored locally in data/experiments.csv</p>
+          </div>
+
+          <span class="tag">CSV STORAGE</span>
+        </div>
+
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Scenario</th>
+                <th>Link status</th>
+                <th>Sent</th>
+                <th>Received</th>
+                <th>Packet loss</th>
+                <th>Recovery</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+
+            <tbody id="history-body">
+              <tr>
+                <td colspan="8">Loading records…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <footer>
+        NetScope · OSPF failover study
+        <span>Built with Flask + Chart.js + Packet Tracer MCP</span>
+      </footer>
+
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
